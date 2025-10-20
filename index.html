@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div id="header">
+        <form autocomplete="off">
+        <input type="text" id="username">
+        <input type="button" value="submit" onclick=getData()>
+    </form>
+    </div>
+
+
+    <script>
+        async function getData() {
+            const username = document.getElementById("username").value;
+            const mainNode = document.getElementById("header");
+            element = await htmlMaker(username);
+            mainNode.insertAdjacentElement('afterend', element)
+        }
+
+        async function htmlMaker(username) {
+            const url = `https://api.github.com/users/${username}`;
+            const response = await fetch(url);
+            const data = await response.json();
+
+
+            const element = document.createElement("div");
+            element.innerHTML = `
+            <img src="https://avatars.githubusercontent.com/u/${data.id}" alt="">
+            <p>name - ${data.name} </p>
+            `;
+            return element;
+        }
+    </script>
+</body>
+</html>
