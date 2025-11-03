@@ -7,26 +7,23 @@
 </head>
 <body>
     <div id="header">
-        <form autocomplete="off" onsubmit="getData(); return false;">
+        <p>Input GitHub Username!</p>
+        <form id="form" autocomplete="off" onsubmit="getData(); return false;">
             <input type="text" id="username">
             <input type="submit" value="submit">
         </form>
+        <br>
     </div>
 
     <script>
         async function getData() {
             const username = document.getElementById("username").value;
+            const mainNode = document.getElementById("header");
+            const form = document.getElementById("form");
 
-            if (username.trim() === '') {
-                console.log("form can't be empty");
-                
-            }
-            else {
-                const mainNode = document.getElementById("header");
-                element = await htmlMaker(username);
-                mainNode.insertAdjacentElement('afterend', element)
-            }
-            
+            element = await htmlMaker(username);
+            mainNode.insertAdjacentElement('afterend', element);
+            form.reset();
         }
 
         async function htmlMaker(username) {
@@ -34,13 +31,17 @@
             const element = document.createElement("div");
             const response = await fetch(url);
 
-            if (response.status == 404) {
+            if (username.trim() === '') {
+                element.innerHTML = `<p>Input field can't be empty!</p>`
+                console.log("form can't be empty");
+                return element;
+            }
+            else if (response.status == 404) {
                 console.log("404 error");
-                element.innerHTML = `<p>username don't exist`
+                element.innerHTML = `<p>Username don't exist!</p>`
                 return element;
             }
             const data = await response.json();
-
             element.innerHTML = `
             <img src="https://avatars.githubusercontent.com/u/${data.id}" alt="">
             <p>name - ${data.name} </p>
