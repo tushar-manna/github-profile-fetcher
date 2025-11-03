@@ -7,28 +7,40 @@
 </head>
 <body>
     <div id="header">
-        <form autocomplete="off">
-        <input type="text" id="username">
-        <input type="button" value="submit" onclick=getData()>
-    </form>
+        <form autocomplete="off" onsubmit="getData(); return false;">
+            <input type="text" id="username">
+            <input type="submit" value="submit">
+        </form>
     </div>
-
 
     <script>
         async function getData() {
             const username = document.getElementById("username").value;
-            const mainNode = document.getElementById("header");
-            element = await htmlMaker(username);
-            mainNode.insertAdjacentElement('afterend', element)
+
+            if (username.trim() === '') {
+                console.log("form can't be empty");
+                
+            }
+            else {
+                const mainNode = document.getElementById("header");
+                element = await htmlMaker(username);
+                mainNode.insertAdjacentElement('afterend', element)
+            }
+            
         }
 
         async function htmlMaker(username) {
             const url = `https://api.github.com/users/${username}`;
+            const element = document.createElement("div");
             const response = await fetch(url);
+
+            if (response.status == 404) {
+                console.log("404 error");
+                element.innerHTML = `<p>username don't exist`
+                return element;
+            }
             const data = await response.json();
 
-
-            const element = document.createElement("div");
             element.innerHTML = `
             <img src="https://avatars.githubusercontent.com/u/${data.id}" alt="">
             <p>name - ${data.name} </p>
